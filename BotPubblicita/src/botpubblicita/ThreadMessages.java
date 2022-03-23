@@ -17,26 +17,25 @@ public class ThreadMessages extends Thread {
     @Override
     public void run() {
         while (BotPubblicita.getrunning()) {
-            try {                
-                if (BotPubblicita.getApi().getMessage().equals("/citta")) {
-                    if (BotPubblicita.getApi().SavedUsers()) {  
-                        if(BotPubblicita.getApi().isAdSet())BotPubblicita.setAdSet(true);
-                        BotPubblicita.getApi().sendMessage("Dove abiti?");
-                        while (BotPubblicita.getApi().getMessage().equals("/citta")) {
-                        }
-                        BotPubblicita.getApi().saveCoordinates(BotPubblicita.getApi().getMessage());
-                        int i = 0;
-                        while (BotPubblicita.getApi().getLocation().equals("") && i < 10) {
-                            Thread.sleep(1000);
-                            i++;
-                        }
-                        if (i == 10) {
-                            BotPubblicita.getApi().sendMessage("Tempo scaduto");
-                            BotPubblicita.getApi().deleteLast();
+            try {
+                String value = BotPubblicita.getApi().getMessage();
+                if (value.contains("/citta") && value.replaceAll(" ", "").length() > 6) {
+                    if (BotPubblicita.getApi().SavedUsers()) {
+                        if (BotPubblicita.getApi().saveCoordinates(value.replace("/citta", ""))) {
+                            int i = 0;
+                            while (BotPubblicita.getApi().getLocation().equals("") && i < 10) {
+                                Thread.sleep(1000);
+                                i++;
+                            }
+                            if (i == 10) {
+                                BotPubblicita.getApi().sendMessage("Tempo scaduto");
+                                BotPubblicita.getApi().deleteLast();
+                            } else {
+                                BotPubblicita.getApi().sendMessage("Salvataggio effettuato, Area selezionata: " + BotPubblicita.getApi().getPaese());
+                                BotPubblicita.getApi().deleteLast();
+                            }
                         } else {
                             BotPubblicita.getApi().sendMessage("Salvataggio effettuato, Area selezionata: " + BotPubblicita.getApi().getPaese());
-                            BotPubblicita.getApi().deleteLast();
-                            BotPubblicita.setAdSet(true);
                         }
                     } else {
                         BotPubblicita.getApi().saveUser();
@@ -48,7 +47,6 @@ public class ThreadMessages extends Thread {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ThreadMessages.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }     
     }
-
 }

@@ -20,30 +20,40 @@ public class BotPubblicita {
      */
     private static Api a;
     private static boolean running;
-    private static boolean adSet;
+    private static UserInput ui;
+    private static Advertisement ad;
 
     public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException {
         running = true;
         a = new Api();
+        ui = new UserInput();
         ThreadMessages messages = new ThreadMessages();
+        ad = new Advertisement();
         messages.start();
+        ad.start();
+        ui.start();
+        ui.join();
         messages.join();
+        ad.join();
+    }
+
+    public static Advertisement getAd() {
+        return ad;
     }
 
     public static Api getApi() {
         return a;
     }
 
+    public static UserInput getUI() {
+        return ui;
+    }
+
+    public static void setRunning() {
+        running = !running;
+    }
+
     public static boolean getrunning() {
         return running;
     }
-
-    public static boolean isAdSet() {
-        return adSet;
-    }
-
-    public static void setAdSet(boolean adSet) {
-        BotPubblicita.adSet = adSet;
-    }
-        
 }

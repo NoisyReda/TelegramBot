@@ -39,6 +39,22 @@ public class ThreadMessages extends Thread {
                         }
                     } else {
                         BotPubblicita.getApi().saveUser();
+                        if (BotPubblicita.getApi().saveCoordinates(value.replace("/citta", ""))) {
+                            int i = 0;
+                            while (BotPubblicita.getApi().getLocation().equals("") && i < 10) {
+                                Thread.sleep(1000);
+                                i++;
+                            }
+                            if (i == 10) {
+                                BotPubblicita.getApi().sendMessage("Tempo scaduto");
+                                BotPubblicita.getApi().deleteLast();
+                            } else {
+                                BotPubblicita.getApi().sendMessage("Salvataggio effettuato, Area selezionata: " + BotPubblicita.getApi().getPaese());
+                                BotPubblicita.getApi().deleteLast();
+                            }
+                        } else {
+                            BotPubblicita.getApi().sendMessage("Salvataggio effettuato, Area selezionata: " + BotPubblicita.getApi().getPaese());
+                        }
                     }
                 }
                 Thread.sleep(1000);
@@ -47,6 +63,6 @@ public class ThreadMessages extends Thread {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ThreadMessages.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }     
+        }
     }
 }
